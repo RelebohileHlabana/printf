@@ -75,6 +75,9 @@ int process_conversion_specifier(char specifier, va_list args)
 			_putchar('%');
 			printed_chars++;
 			break;
+		case 'r':
+			printed_chars += _print_custom_specifier(va_arg(args, char *));
+			break;
 		default:
 			_putchar('%');
 			_putchar(specifier);
@@ -83,7 +86,6 @@ int process_conversion_specifier(char specifier, va_list args)
 	}
 
 	return (printed_chars);
-
 }
 
 /**
@@ -97,9 +99,7 @@ int _print_str(char *str)
 	int printed_chars = 0;
 
 	if (str == NULL)
-	{
 		str = "(null)";
-	}
 
 	while (*str)
 	{
@@ -107,6 +107,28 @@ int _print_str(char *str)
 		str++;
 		printed_chars++;
 	}
+
+	return (printed_chars);
+}
+
+/**
+ * _print_custom_specifier - Prints a custom specifier
+ * @str: The string to print as the custom specifier
+ *
+ * Return: The number of characters printed
+ */
+int _print_custom_specifier(char *str)
+{
+	int printed_chars = 0;
+
+	_putchar('[');
+	while (*str)
+	{
+		_putchar(*str);
+		str++;
+		printed_chars++;
+	}
+	_putchar(']');
 
 	return (printed_chars);
 }
