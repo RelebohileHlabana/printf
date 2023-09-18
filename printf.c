@@ -110,7 +110,6 @@ int _print_str(char *str)
 
 	return (printed_chars);
 }
-
 /**
  * _print_custom_specifier - Prints a custom specifier
  * @str: The string to print as the custom specifier
@@ -121,15 +120,28 @@ int _print_custom_specifier(char *str)
 {
 	int printed_chars = 0;
 
-	_putchar('[');
-	while (*str)
+	if (str == NULL)
+		str = "(null)";
+
+	/* Check for the custom specifier %r */
+	if (*str == '%')
 	{
 		_putchar(*str);
-		str++;
 		printed_chars++;
+		str++;
 	}
-	_putchar(']');
+	else
+	{
+		/* Handle other characters as normal */
+		_putchar('[');
+		while (*str)
+		{
+			_putchar(*str);
+			str++;
+			printed_chars++;
+		}
+		_putchar(']');
+	}
 
 	return (printed_chars);
 }
-
