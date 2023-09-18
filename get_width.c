@@ -15,7 +15,7 @@ int find_width(const char *our_format, int *j, va_list list)
 
 	while (our_format[curs_i] != '\0')
 	{
-		if (digit(our_format[curs_i]))
+		if (is_digit(our_format[curs_i]))
 		{
 			width *= 10;
 			width += our_format[curs_i] - '0';

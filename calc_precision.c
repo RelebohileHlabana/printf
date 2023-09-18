@@ -13,7 +13,7 @@ int precision_get(const char *our_format, int *j, va_list list)
 	int precision = -1;
 
 	if (our_format[curs_i] != '.')
-		return (precisio);
+		return (precision);
 
 	precision = 0;
 
