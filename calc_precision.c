@@ -1,35 +1,33 @@
 #include "main.h"
+#include <ctype.h>
 
 /**
- * precision_get - Calculates the precision for printing
- * @our_format: Formatted string to print the arguments.
+ * precision_calc - Calculates the precision for printing
+ * @format: Formatted string to print the arguments.
  * @j: Arguments to be printed.
  * @list: List of arguments.
  * Return: Precision.
  */
-int precision_get(const char *our_format, int *j, va_list list)
+int precision_calc(const char *format, int *j, va_list list)
 {
-	int curs_i = *j + 1;
+	int calc_a = *j + 1;
 	int precision = -1;
 
-	if (our_format[curs_i] != '.')
+	if (format[calc_a] != '.')
 		return (precision);
 
 	precision = 0;
 
-	curs_i += 1;
-
-	while (our_format[curs_i] != '\0')
+	for (calc_a += 1; format[calc_a] != '\0'; calc_a++)
 	{
-		if (is_digit(our_format[curs_i]))
+		if (isdigit(format[calc_a]))
 		{
 			precision *= 10;
-			precision += our_format[curs_i] - '0';
-			curs_i++;
+			precision += format[calc_a] - '0';
 		}
-		else if (our_format[curs_i] == '*')
+		else if (format[calc_a] == '*')
 		{
-			curs_i++;
+			calc_a++;
 			precision = va_arg(list, int);
 			break;
 		}
@@ -39,7 +37,7 @@ int precision_get(const char *our_format, int *j, va_list list)
 		}
 	}
 
-	*j = curs_i - 1;
+	*j = calc_a - 1;
 
 	return (precision);
 }
