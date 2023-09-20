@@ -1,147 +1,67 @@
 #include "main.h"
-#include <stdarg.h>
-#include <unistd.h>
+
+void print_buffer(char buffer[], int *buff_ind);
 
 /**
- * _printf - Prints formatted output to stdout
- * @format: The format string
- *
- * Return: The number of characters printed (excluding the null byte)
+ * _printf - Printf function
+ * @format: format.
+ * Return: Printed chars.
  */
 int _printf(const char *format, ...)
 {
-	va_list args;
-	int printed_chars = 0;
+	int i, printed = 0, printed_chars = 0;
+	int flags, width, precision, size, buff_ind = 0;
+	va_list list;
+	char buffer[BUFF_SIZE];
 
-	va_start(args, format);
-	printed_chars = process_format_string(format, args);
-	va_end(args);
+	if (format == NULL)
+		return (-1);
 
-	return (printed_chars);
-}
+	va_start(list, format);
 
-/**
- * process_format_string - Process the format string and print output
- * @format: The format string
- * @args: The variable arguments list
- *
- * Return: The number of characters printed
- */
-int process_format_string(const char *format, va_list args)
-{
-	int printed_chars = 0;
-
-	while (*format)
+	for (i = 0; format && format[i] != '\0'; i++)
 	{
-		if (*format != '%')
+		if (format[i] != '%')
 		{
-			_putchar(*format);
+			buffer[buff_ind++] = format[i];
+			if (buff_ind == BUFF_SIZE)
+				print_buffer(buffer, &buff_ind);
+			/* write(1, &format[i], 1);*/
 			printed_chars++;
 		}
 		else
 		{
-			format++;
-			if (*format == '\0')
-				break;
-			printed_chars += process_conversion_specifier(*format, args);
+			print_buffer(buffer, &buff_ind);
+			flags = get_flags(format, &i);
+			width = get_width(format, &i, list);
+			precision = get_precision(format, &i, list);
+			size = get_size(format, &i);
+			++i;
+			printed = handle_print(format, &i, list, buffer,
+				flags, width, precision, size);
+			if (printed == -1)
+				return (-1);
+			printed_chars += printed;
 		}
-		format++;
 	}
+
+	print_buffer(buffer, &buff_ind);
+
+	va_end(list);
 
 	return (printed_chars);
 }
 
 /**
- * process_conversion_specifier - Process a conversion specifier
- * @specifier: The conversion specifier character
- * @args: The variable arguments list
- *
- * Return: The number of characters printed
+ * print_buffer - Prints the contents of the buffer if it exist
+ * @buffer: Array of chars
+ * @buff_ind: Index at which to add next char, represents the length.
  */
-int process_conversion_specifier(char specifier, va_list args)
+void print_buffer(char buffer[], int *buff_ind)
 {
-	int printed_chars = 0;
+	if (*buff_ind > 0)
+		write(1, &buffer[0], *buff_ind);
 
-	switch (specifier)
-	{
-		case 'c':
-			_putchar(va_arg(args, int));
-			printed_chars++;
-			break;
-		case 's':
-			printed_chars += _print_str(va_arg(args, char *));
-			break;
-		case '%':
-			_putchar('%');
-			printed_chars++;
-			break;
-		case 'r':
-			printed_chars += _print_custom_specifier(va_arg(args, char *));
-			break;
-		default:
-			_putchar('%');
-			_putchar(specifier);
-			printed_chars += 2;
-			break;
-	}
-
-	return (printed_chars);
+	*buff_ind = 0;
 }
 
-/**
- * _print_str - Prints a string
- * @str: The string to print
- *
- * Return: The number of characters printed
- */
-int _print_str(char *str)
-{
-	int printed_chars = 0;
-
-	if (str == NULL)
-		str = "(null)";
-
-	while (*str)
-	{
-		_putchar(*str);
-		str++;
-		printed_chars++;
-	}
-
-	return (printed_chars);
-}
-/**
- * _print_custom_specifier - Prints a custom specifier
- * @str: The string to print as the custom specifier
- *
- * Return: The number of characters printed
- */
-int _print_custom_specifier(char *str)
-{
-	int printed_chars = 0;
-
-	if (str == NULL)
-		str = "(null)";
-
-	/* Check for the custom specifier %r */
-	if (*str == '%')
-	{
-		_putchar(*str);
-		printed_chars++;
-		str++;
-	}
-	else
-	{
-		/* Handle other characters as normal */
-		_putchar('[');
-		while (*str)
-		{
-			_putchar(*str);
-			str++;
-			printed_chars++;
-		}
-		_putchar(']');
-	}
-
-	return (printed_chars);
-}
