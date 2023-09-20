@@ -2,14 +2,14 @@
 #include <ctype.h>
 
 /**
- * calculate_width - Calculate the width for printing
+ * get_width - Calculate the width for printing
  * @format: Formatted string used to print the arguments.
  * @index: Index to track the position in the format string.
  * @list: List of arguments.
  *
  * Return: The calculated width.
  */
-int calculate_width(const char *format, int *index, va_list list)
+int get_width(const char *format, int *index, va_list list)
 {
 	int current_i;
 	int width = 0;
