@@ -55,7 +55,7 @@ int _printf(const char *format, ...)
 
 			++i;
 
-			printed = handle_write_char(format, &i, list, buffer,
+			printed = handle_print(format, &i, list, buffer,
 
 					flags, width, precision, size);
 
